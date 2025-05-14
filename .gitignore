@@ -1,0 +1,15 @@
+# Sub directories
+/.venv/
+/.old/
+*__pycache__/
+
+# commit comment
+/commit_comment.txt
+
+# sublime text project files
+/*.sublime-project
+/*.sublime-workspace
+
+# other extensions
+*.backup*
+*.csv
