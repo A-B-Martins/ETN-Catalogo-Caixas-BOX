@@ -13,3 +13,7 @@
 # other extensions
 *.backup*
 *.csv
+*.xls
+
+configurar_usuário_administrador.bat
+configurar_usuário_devel.bat

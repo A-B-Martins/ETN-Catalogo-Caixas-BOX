@@ -1,7 +1,12 @@
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QPushButton, QFormLayout, QSizePolicy
+from PyQt5.QtWidgets import (
+	QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QPushButton, QFormLayout, QSizePolicy,
+	QLineEdit, QCheckBox
+)
 
-from .utils import setup_fields_dict, setup_field_groups_dict
+from .NullableSpinBox import NullableSpinBox
+from .utils import setup_fields_dict, setup_field_groups_dict, HEADERS
+from .models import db_col_restrictions_extended, text_fields_max_len
 
 class EditView(QWidget):
 	def __init__(self):
@@ -14,7 +19,7 @@ class EditView(QWidget):
 		self.fields = setup_fields_dict()
 
 		# Configure date widgets
-		date_fields = ['DATA INÍCIO', 'DATA FIM', 'CONF.']
+		date_fields = [HEADERS.DATA_INICIO, HEADERS.DATA_FIM, HEADERS.CONF]
 		for field in date_fields:
 			self.fields[field].setCalendarPopup(True)
 			self.fields[field].setDisplayFormat("dd-MM-yyyy")
@@ -25,7 +30,7 @@ class EditView(QWidget):
 			checkbox.toggled.connect(self.fields[field].setEnabled)
 
 		# Configure spinboxes
-		for field in ['ARQ.', 'EST.', 'PRAT.', 'DEST.']:
+		for field in [HEADERS.ARQ, HEADERS.EST, HEADERS.PRAT, HEADERS.DEST]:
 			self.fields[field].setMaximum(999)
 
 		# Create groups
@@ -68,10 +73,15 @@ class EditView(QWidget):
 			group.setMinimumWidth(450)
 
 		self.layout.addWidget(container)
+
+		# Add max character limit for text fields
+		for field_name, widget in self.fields.items():
+			if isinstance(widget, QLineEdit) and text_fields_max_len[field_name]:
+				widget.setMaxLength(text_fields_max_len[field_name])
 		
 		# Add control buttons
-		self.save_btn = QPushButton("Save Changes")
-		self.back_btn = QPushButton("Back")
+		self.save_btn = QPushButton("Salvar Mudanças")
+		self.back_btn = QPushButton("Retornar")
 		
 		btn_layout = QHBoxLayout()
 		btn_layout.addStretch()
@@ -79,5 +89,40 @@ class EditView(QWidget):
 		btn_layout.addWidget(self.save_btn)
 		btn_layout.addStretch()
 		self.layout.addLayout(btn_layout)
-		
 		self.layout.addStretch()
+
+		# Connect field signals
+		self.connect_field_signals()
+		self.validate_form()  # Initial validation
+
+	def connect_field_signals(self):
+		"""Connect change signals for all input fields to validation"""
+		for field_name, widget in self.fields.items():
+			if isinstance(widget, QLineEdit):
+				widget.textChanged.connect(self.validate_form)
+			elif isinstance(widget, NullableSpinBox):
+				widget.valueChanged.connect(self.validate_form)
+			elif isinstance(widget, QCheckBox):
+				widget.stateChanged.connect(self.validate_form)
+
+	def validate_form(self):
+		"""Validate form and enable/disable save button"""
+		is_valid = True
+
+		for field_name, widget in self.fields.items():
+			is_nullable, max_len = db_col_restrictions_extended[field_name]
+
+			if (
+				(not is_nullable) and 
+				(
+					(isinstance(widget, QCheckBox) and not widget.isChecked()) or
+					(isinstance(widget, NullableSpinBox) and (widget.value() == "" or widget.value() is None)) or
+					(isinstance(widget, QLineEdit) and not widget.text())
+				)
+			):
+				is_valid = False
+				break
+
+		# print(f"is_valid: {is_valid}")
+
+		self.save_btn.setEnabled(is_valid)

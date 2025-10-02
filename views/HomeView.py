@@ -2,6 +2,8 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 from PyQt5.QtCore import Qt
 
+from .database import IS_READ_ONLY
+
 class HomeView(QWidget):
 	def __init__(self):
 		super().__init__()
@@ -11,8 +13,8 @@ class HomeView(QWidget):
 		layout.addStretch()
 		
 		btn_layout = QVBoxLayout()
-		self.search_btn = QPushButton("Search Entries")
-		self.create_btn = QPushButton("Create New Entry")
+		self.search_btn = QPushButton("Buscar")
+		self.create_btn = QPushButton("Novo Registro")
 		
 		# Style buttons
 		self.search_btn.setFixedSize(200, 60)
@@ -25,3 +27,5 @@ class HomeView(QWidget):
 		
 		layout.addLayout(btn_layout)
 		layout.addStretch()
+
+		self.create_btn.setEnabled(not IS_READ_ONLY)
