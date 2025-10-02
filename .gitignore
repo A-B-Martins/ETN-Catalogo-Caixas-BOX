@@ -4,7 +4,7 @@
 *__pycache__/
 
 # commit comment
-/commit_comment.txt
+/commit.txt
 
 # sublime text project files
 /*.sublime-project
