@@ -341,7 +341,7 @@ class MainWindow(QMainWindow):
 
 		date_checkbox = {}
 		date_checkbox[HEADERS.DATA_INICIO_START] = date_checkbox[HEADERS.DATA_INICIO_END] = filters[HEADERS.DATA_INICIO_ENABLED].isChecked()
-		date_checkbox[HEADERS.DATA_FIM_START]    = date_checkbox[HEADERS.DATA_FIM_END]    = filters[HEADERS.DATA_INICIO_ENABLED].isChecked()
+		date_checkbox[HEADERS.DATA_FIM_START]    = date_checkbox[HEADERS.DATA_FIM_END]    = filters[HEADERS.DATA_FIM_ENABLED].isChecked()
 		date_checkbox[HEADERS.CONF_START]        = date_checkbox[HEADERS.CONF_END]        = filters[HEADERS.CONF_ENABLED].isChecked()
 		
 		date_time_tpls = [
@@ -357,6 +357,7 @@ class MainWindow(QMainWindow):
 	def query_search(self):
 		filters = {}
 		params = self.current_search_params
+		print(params)
 
 		# Text fields
 		for col, col_db in self.text_fields_col_db_map:

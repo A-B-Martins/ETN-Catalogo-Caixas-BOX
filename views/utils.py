@@ -104,6 +104,7 @@ def build_query(model, filters):
 		'_not': {'field': value}             # NOT condition
 	}
 	"""
+	print(filters)
 	conditions = []
 	
 	# Extended operator map with PostgreSQL-specific options

@@ -2,12 +2,11 @@ from peewee import PostgresqlDatabase
 import os
 
 # Load environment variables
-DB_NAME = 'caixas_box'
-# DB_USER = os.getenv('caixas_box_db_user')
-# DB_PASSWORD = os.getenv('caixas_box_db_password')
-# DB_HOST = 'californio'
-DB_HOST = '127.0.0.1'
+DB_HOST = 'californio'
 DB_PORT = 5432
+DB_NAME = 'caixas_box'
+DB_USER = os.getenv('caixas_box_db_user')
+DB_PASSWORD = os.getenv('caixas_box_db_password')
 
 db = PostgresqlDatabase(
 	DB_NAME,

@@ -1,0 +1,10 @@
+## pgsql config commands
+
+CREATE USER caixas_box_user WITH PASSWORD '<password_admin>';
+CREATE DATABASE caixas_box OWNER caixas_box_user;
+CREATE USER caixas_box_readonly WITH PASSWORD '<password_read_only>;
+GRANT CONNECT ON DATABASE caixas_box TO caixas_box_readonly;
+GRANT USAGE ON SCHEMA public TO caixas_box_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO caixas_box_readonly;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO caixas_box_readonly;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
